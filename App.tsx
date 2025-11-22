@@ -10,6 +10,7 @@ import Login from './pages/Login';
 import Profile from './pages/Profile';
 import AdminUpload from './pages/AdminUpload';
 import Tips from './pages/Tips';
+import PromptsPage from './pages/Prompts';   // ← เพิ่มมาใหม่
 import { AuthProvider } from './context/AuthContext';
 
 const App: React.FC = () => {
@@ -26,6 +27,9 @@ const App: React.FC = () => {
             <Route path="success" element={<Success />} />
             <Route path="admin/upload" element={<AdminUpload />} />
             <Route path="tips" element={<Tips />} />
+
+            {/* ⭐️ หน้าใหม่: Prompt Archive */}
+            <Route path="prompts" element={<PromptsPage />} /> 
           </Route>
         </Routes>
       </HashRouter>
