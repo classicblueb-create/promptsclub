@@ -125,7 +125,8 @@ const Library: React.FC = () => {
     return prompts.filter(p => {
       const matchesSearch = p.title.toLowerCase().includes(search.toLowerCase()) || 
                             p.description.toLowerCase().includes(search.toLowerCase());
-      const matchesFilter = activeFilter === 'All' || p.tags.includes(activeFilter);
+      const matchesFilter = activeFilter === 'All' ||
+        p.tags.some(tag => tag.toLowerCase() === activeFilter.toLowerCase());
       return matchesSearch && matchesFilter;
     });
   }, [prompts, search, activeFilter]);
