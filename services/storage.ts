@@ -87,14 +87,16 @@ const getWeek = (date: Date) => {
 // Robust Tag Parser
 const parseTags = (tagsInput: any): string[] => {
   if (Array.isArray(tagsInput)) {
-    return tagsInput; 
+    return tagsInput.filter((t) => typeof t === 'string' && t.trim().length > 0);
   }
   
   if (typeof tagsInput === 'string') {
     // Try JSON parse first (e.g. '["tag1", "tag2"]')
     try {
       const parsed = JSON.parse(tagsInput);
-      if (Array.isArray(parsed)) return parsed;
+      if (Array.isArray(parsed)) {
+        return parsed.filter((t) => typeof t === 'string' && t.trim().length > 0);
+      }
     } catch (e) {
       // Not JSON
     }
@@ -105,9 +107,17 @@ const parseTags = (tagsInput: any): string[] => {
       clean = clean.substring(1, clean.length - 1);
     }
     
+    // If clean string is empty after removing braces (i.e. "{}"), return empty array
+    if (!clean) {
+      return [];
+    }
+
     // Split by comma and clean quotes
     if (clean.includes(',') || clean) {
-      return clean.split(',').map((t: string) => t.trim().replace(/^"|"$/g, '').replace(/^'|'$/g, '')).filter((t: string) => t);
+      return clean
+        .split(',')
+        .map((t: string) => t.trim().replace(/^"|"$/g, '').replace(/^'|'$/g, ''))
+        .filter((t: string) => t && t.length > 0);
     }
     
     return [clean];
@@ -126,6 +136,7 @@ export const StorageService = {
         .order('created_at', { ascending: false });
 
       if (error) {
+        console.error("Supabase Fetch Error:", error);
         if (error.message && (error.message.includes('fetch') || error.message.includes('connection'))) {
           console.warn("Supabase unreachable. Switching to Mock Data.");
           return MOCK_LIBRARY;
@@ -148,6 +159,7 @@ export const StorageService = {
       }));
 
     } catch (e) {
+      console.error("Unexpected Error in getLibrary:", e);
       return MOCK_LIBRARY;
     }
   },
@@ -162,6 +174,7 @@ export const StorageService = {
 
       if (error) {
         if (error.code !== 'PGRST116') { 
+           console.error("Supabase Fetch Error (getPromptById):", error);
            if (error.message && (error.message.includes('fetch') || error.message.includes('connection'))) {
              return MOCK_LIBRARY.find(p => p.id === id);
            }
@@ -178,6 +191,7 @@ export const StorageService = {
         imageUrl: data.image_url || 'https://picsum.photos/400/500?random=99'
       };
     } catch (e) {
+      console.error("Unexpected Error in getPromptById:", e);
       return MOCK_LIBRARY.find(p => p.id === id);
     }
   },
