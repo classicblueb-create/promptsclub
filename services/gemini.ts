@@ -1,10 +1,19 @@
 import { GoogleGenAI } from "@google/genai";
 
 // Initialize the client with the API key from the environment
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+
+if (!apiKey) {
+  console.warn("VITE_GEMINI_API_KEY is not set.");
+}
+
+const ai = new GoogleGenAI({ apiKey: apiKey || 'placeholder' });
 
 export const refineDescription = async (rawText: string): Promise<string> => {
   try {
+    if (!apiKey) {
+      throw new Error("Missing Gemini API Key");
+    }
     const model = 'gemini-2.5-flash';
     const prompt = `You are a helpful assistant for a prompt engineering service called "Prompt Club". 
     A user has written a rough request for an AI prompt they want. 

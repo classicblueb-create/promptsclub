@@ -21,10 +21,10 @@ const RequestForm: React.FC = () => {
   const [showMemberModal, setShowMemberModal] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // EmailJS Configuration (Production Keys)
-  const EMAILJS_SERVICE_ID = 'service_g4ge30w';
-  const EMAILJS_TEMPLATE_ID = 'template_wbk3m9b';
-  const EMAILJS_PUBLIC_KEY = 'jLVAD7U7D5ODkbZxi';
+  // EmailJS Configuration
+  const EMAILJS_SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID || 'service_g4ge30w';
+  const EMAILJS_TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID || 'template_wbk3m9b';
+  const EMAILJS_PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY || 'jLVAD7U7D5ODkbZxi';
 
   // Load stats when name changes
   useEffect(() => {
